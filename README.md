@@ -2,7 +2,7 @@
 _(**Ko**)tlin (**cha**)ngelog (**Mer**)ge script_
 
 This script collects all markdown based changelog files in a given folder and inserts them into an existing `CHANGELOG.md`.
-It's used for _Git_ workflows with separated changelog entries to avoid merge conflicts.
+It's used for _Git_ workflows with separated changelog entries to avoid **merge conflicts**.
 Each story/branch can provide its own mini-changelog. And before a release you can easily merge them together.
 In addition it supports `public` and `private` sections.
 
@@ -10,7 +10,7 @@ In addition it supports `public` and `private` sections.
 We maintain our changelog for our product in the git repository next to the code.
 Every branch is based on a user story with a corresponding log entry.
 The changelog is one big file with the newest entry in the first line, the `CHANGELOG.md`.
-Now whenever we merge different branches together, merge conflicts are almost inevitable.
+Now whenever we merge different branches together, **merge conflicts** are almost inevitable.
 Even the [`CHANGELOG merge=union`](https://about.gitlab.com/2015/02/10/gitlab-reduced-merge-conflicts-by-90-percent-with-changelog-placeholders/)
 didn't help to resolve these conflicts automatically.
 
@@ -19,15 +19,15 @@ Provide for every story/branch a separate changelog file named by the Jira Task 
 Merge branches easily without any conflicts on a changelog.
 Before tag and release of the master branch run the `kochamer.kt` script to:
 
-1. Read all changelog files in a given folder
-2. Group them by `public` and `private` sections
-3. Add missing task identifiers based on the filename
-4. Generate a release title based on the current date
-5. Insert the new changelog entry into the existing `CHANGELOG.md`
-6. Delete all merged changelog files
+1. Read all changelog files in a given folder.
+2. Group them by `public` and `private` sections.
+3. Add missing task identifiers based on the filename.
+4. Generate a release title based on the current date.
+5. Insert the new changelog entry into the existing `CHANGELOG.md`.
+6. Delete all merged changelog files.
 
 ## Example
-Consider three files in the folder `changelog` and our existing `CHANGELOG.md` in the main dir:
+Consider three files in the folder `\changelog` and our existing `CHANGELOG.md` in the main dir:
 
 * `CHANGELOG.md`
 ``` markdown
@@ -78,7 +78,7 @@ After running `kochamer.kt` the `CHANGELOG.md` will be:
 * ....
 ```
 
-View the [KochamerTest.tk](src/KochamerTest.tk) for details.
+View the [KochamerTest](src/KochamerTest.kt) for details.
 
 ### Alternatives
 * [gnulib git-merge-changelog](https://gnu.wildebeest.org/blog/mjw/2012/03/16/automagically-merging-changelog-files-with-mercurial-or-git/)
