@@ -13,31 +13,35 @@ import java.nio.file.StandardOpenOption
  * _(Ko)tlin (cha)ngelog (mer)ge script
  *
  * Provide a target folder with changelog files [#changelog] and a destination [#changelogFile].
+ *
+ * For details, samples and tests see also: https://github.com/TobseF/kochamer
  */
 
 /** Folder which contains the changelog markdown files*/
-private const val changelogDir = "./changelog/"
+private val changelogDir = "./changelog/"
 /** Destination changelog file */
-private const val changelogFile = "CANGELOG.md"
+private val changelogFile = "./CHANGELOG.md"
 private val locale = Locale.GERMAN
-private val deletMergedFiles = true
+private val deleteMergedFiles = true
 
-private val newLine = System.lineSeparator()
 
-private fun Topic.formatTopic() = when (this) {
-    Topic.public -> "# Public:"
-    Topic.private -> "# Private:"
+fun formatTopic(topic: Topic) = when (topic) {
+    Topic.public -> "## Public:"
+    Topic.private -> "## Private:"
 }
 
-private fun releaseNamePattern(buildName: String, date: String) = "$buildName vom $date"
+fun releaseNamePattern(buildName: String, date: String) = "$buildName vom $date"
 
 /**
- * You can run me without any params
+ * Runnable without any params.
+ * For script config, see the vals above.
+ *
+ * To use as script rename file to `.kts` add constructor call: `script.main()`
  */
 fun main(args: Array<String>) {
     val changelog = readChangeLogs()
     changelog.appendToFileOnTop(changelogFile)
-    if (deletMergedFiles) {
+    if (deleteMergedFiles) {
         listReadmeFiles().deleteAll()
         println("Deleted merged files")
     }
@@ -45,7 +49,7 @@ fun main(args: Array<String>) {
     println(changelog)
 }
 
-private fun readChangeLogs(): String {
+fun readChangeLogs(): String {
     return listReadmeFiles()
             .map { ChangelogFile(it) }
             .flatMap { readChangelogEntry(it) }
@@ -53,7 +57,7 @@ private fun readChangeLogs(): String {
             .formatChangeLog()
 }
 
-private fun listReadmeFiles(): Stream<File> {
+fun listReadmeFiles(): Stream<File> {
     val isChangelog = FileSystems.getDefault().getPathMatcher("glob:**.md")
     return Files.list(Paths.get(changelogDir)).filter(isChangelog::matches)
             .map { it.toFile() }
@@ -95,35 +99,37 @@ fun readChangelogEntry(file: ChangelogFile): Stream<ChangelogEntry> {
 
 fun String.containsTopic(topic: Topic) = this.contains(regexTopic(topic))
 
-private fun Map<Topic, List<ChangelogEntry>>.formatChangeLog(): String {
-    var changeLogEntry = getReleaseName() + newLine + newLine
+fun Map<Topic, List<ChangelogEntry>>.formatChangeLog(): String {
+    var changeLogEntry = getReleaseName() + System.lineSeparator() + System.lineSeparator()
 
     fun combineToChangelog(topic: Topic) {
-        changeLogEntry += topic.formatTopic() + newLine
-        changeLogEntry += this[topic].formatLogEntryList()
-        changeLogEntry += newLine
+        if (this[topic] != null) {
+            changeLogEntry += formatTopic(topic) + System.lineSeparator()
+            changeLogEntry += this[topic].formatLogEntryList()
+            changeLogEntry += System.lineSeparator()
+        }
     }
     Topic.values().forEach { combineToChangelog(it) }
     return changeLogEntry
 }
 
-private fun List<ChangelogEntry>?.formatLogEntryList() = this?.joinToString(separator = newLine) { it.formatLogEntry() } + newLine
+fun List<ChangelogEntry>?.formatLogEntryList() = this?.joinToString(separator = System.lineSeparator()) { it.formatLogEntry() } + System.lineSeparator()
 
-private fun getReleaseName(): String {
+fun getReleaseName(): String {
     val releaseName = Calendar.getInstance()[Calendar.YEAR].toString() + "." + Calendar.getInstance()[Calendar.WEEK_OF_YEAR].toString()
     val date = DateFormat.getDateInstance(DateFormat.MEDIUM, locale).format(Date())
     return releaseNamePattern(releaseName, date)
 }
 
-private fun ChangelogEntry.formatLogEntry(): String = "${this.text} [${this.task}]"
+fun ChangelogEntry.formatLogEntry(): String = "${this.text} [${this.task}]"
 
-private fun Topic.toRegex() = regexTopic(this)
+fun Topic.toRegex() = regexTopic(this)
 
-private fun regexTopic(topic: Topic) = Regex("\\**\\s*#*\\s*${topic.name}:\\s*", RegexOption.IGNORE_CASE)
+fun regexTopic(topic: Topic) = Regex("\\**\\s*#*\\s*${topic.name}:\\s*", RegexOption.IGNORE_CASE)
 
-private fun String.remove(regex: Regex) = this.replace(regex, "")
+fun String.remove(regex: Regex) = this.replace(regex, "")
 
-private fun String.appendToFileOnTop(fileName: String) {
+fun String.appendToFileOnTop(fileName: String) {
     val fileContent = Files.readAllBytes(Paths.get(fileName))
     Files.write(
             Paths.get(fileName),
@@ -135,4 +141,4 @@ private fun String.appendToFileOnTop(fileName: String) {
             StandardOpenOption.APPEND)
 }
 
-private fun Stream<File>.deleteAll() = this.forEach { it.delete() }
+fun Stream<File>.deleteAll() = this.forEach { it.delete() }

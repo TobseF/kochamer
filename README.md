@@ -6,6 +6,8 @@ It's used for _Git_ workflows with separated changelog entries to avoid **merge 
 Each story/branch can provide its own mini-changelog. And before a release you can easily merge them together.
 In addition it supports `public` and `private` sections.
 
+This script has no dependencies and doesn't need gradle or maven to run.
+
 ## Problem
 We maintain our changelog for our product in the git repository next to the code.
 Every branch is based on a user story with a corresponding log entry.
@@ -25,6 +27,10 @@ Before tag and release of the master branch run the `kochamer.kt` script to:
 4. Generate a release title based on the current date.
 5. Insert the new changelog entry into the existing `CHANGELOG.md`.
 6. Delete all merged changelog files.
+
+## Installation
+Just configure the scripts vals on top. To run it as Kotlin Script you can change the file extions to `.kts` and add the missing `main()` call.
+Alternatively download the latest script [release](https://github.com/TobseF/kochamer/releases).
 
 ## Example
 Consider three files in the folder `\changelog` and our existing `CHANGELOG.md` in the main dir:
@@ -78,7 +84,7 @@ After running `kochamer.kt` the `CHANGELOG.md` will be:
 * ....
 ```
 
-View the [KochamerTest](src/KochamerTest.kt) for details.
+View the [KochamerTest](src/test/kotlin/KochamerTest.kt) for details.
 
 ### Alternatives
 * [gnulib git-merge-changelog](https://gnu.wildebeest.org/blog/mjw/2012/03/16/automagically-merging-changelog-files-with-mercurial-or-git/)
@@ -90,6 +96,7 @@ View the [KochamerTest](src/KochamerTest.kt) for details.
   Yes, see  `locale = Locale.GERMAN`
 * Kochamer isn't a real Kotlin script, right?  
   Yes, it is simple Kotlin code. You can change the file extension to `.kts` to run it as a script.
-  But this way you don't have the option to debug or test the code.
+  But this way you don't have the option to debug or test the code.  
+  For a prebuilt script look for the [releases](https://github.com/TobseF/kochamer/releases).
 
 
